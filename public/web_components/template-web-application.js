@@ -1,5 +1,7 @@
 import {html, css, LitElement} from '../web_modules/lit-element.js';
 
+import '../web_modules/@wonkytech/tm-splash-screen.js';
+
 window.customElements.define('template-web-application', class extends LitElement {
 
     // noinspection JSUnusedGlobalSymbols
