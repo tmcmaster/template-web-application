@@ -1,0 +1,45 @@
+{
+    "name": "template-web-application",
+    "version": "0.0.0",
+    "description": "This is a template for getting stated with a new web application.",
+    "author": "Tim McMaster",
+    "license": "MIT",
+    "homepage": "https://github.com/tmcmaster/template-web-application#readme",
+    "main": "index.js",
+    "scripts": {
+        "init": "npm run init:install",
+        "build": "npm install && npx @pika/web --dest public/web_modules",
+        "serve": "firebase serve --port 8000",
+        "init:install": "npm install",
+        "init:firebase": "firebase init"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tmcmaster/template-web-application.git"
+    },
+    "keywords": [
+        "template",
+        "pwa",
+        "web",
+        "application",
+        "components",
+        "javascript",
+        "html",
+        "css",
+        "firebase"
+    ],
+    "bugs": {
+        "url": "https://github.com/tmcmaster/template-web-application/issues"
+    },
+    "dependencies": {
+        "@wonkytech/material-elements": "latest",
+        "@wonkytech/polymer-elements": "latest",
+        "@wonkytech/tm-script-loader": "latest",
+        "@wonkytech/vaadin-elements": "latest",
+        "lit-element": "^2.0.1",
+        "lit-html": "^1.0.0"
+    },
+    "devDependencies": {
+        "@pika/web": "^0.6.1"
+    }
+}

@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "@wonkytech/material-elements": "./@wonkytech/material-elements.js",
+    "@wonkytech/polymer-elements": "./@wonkytech/polymer-elements.js",
+    "@wonkytech/tm-script-loader": "./@wonkytech/tm-script-loader.js",
+    "@wonkytech/vaadin-elements": "./@wonkytech/vaadin-elements.js",
+    "lit-element": "./lit-element.js",
+    "lit-html": "./lit-html.js"
+  }
+}
