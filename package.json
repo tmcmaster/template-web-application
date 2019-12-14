@@ -32,11 +32,11 @@
         "url": "https://github.com/tmcmaster/template-web-application/issues"
     },
     "dependencies": {
-        "@wonkytech/material-elements": "latest",
-        "@wonkytech/polymer-elements": "latest",
-        "@wonkytech/tm-script-loader": "latest",
-        "@wonkytech/tm-splash-screen": "0.0.3",
-        "@wonkytech/vaadin-elements": "latest",
+        "@wonkytech/material-elements": "~0.0",
+        "@wonkytech/polymer-elements": "~0.0",
+        "@wonkytech/tm-script-loader": "~0.0",
+        "@wonkytech/tm-splash-screen": "~0.0",
+        "@wonkytech/vaadin-elements": "~0.0",
         "lit-element": "^2.0.1",
         "lit-html": "^1.0.0"
     },
