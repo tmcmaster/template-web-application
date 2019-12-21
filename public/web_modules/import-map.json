@@ -2,6 +2,8 @@
   "imports": {
     "@wonkytech/material-elements": "./@wonkytech/material-elements.js",
     "@wonkytech/polymer-elements": "./@wonkytech/polymer-elements.js",
+    "@wonkytech/tm-page-layout": "./@wonkytech/tm-page-layout.js",
+    "@wonkytech/tm-page-router": "./@wonkytech/tm-page-router.js",
     "@wonkytech/tm-script-loader": "./@wonkytech/tm-script-loader.js",
     "@wonkytech/tm-splash-screen": "./@wonkytech/tm-splash-screen.js",
     "@wonkytech/vaadin-elements": "./@wonkytech/vaadin-elements.js",

@@ -1,6 +1,7 @@
 import {html, render} from "./web_modules/lit-html.js";
-import './web_components/template-web-application.js';
 import {loadFirebaseEmbedded} from './web_modules/@wonkytech/tm-script-loader.js';
+//import './web_components/app-one.js';
+import './web_components/app-two.js';
 
 loadFirebaseEmbedded().then((firebase) => {
     try {
@@ -14,31 +15,15 @@ loadFirebaseEmbedded().then((firebase) => {
     console.error('There was an error loading the firebase libraries.', error);
 });
 
-render(html`
-    <style>
-        html {
-            --tm-splash-screen-background: lightgray; 
-            --tm-splash-screen-color: black; 
-        }
-    </style>
-`, document.querySelector('head'));
 
 render(html`
     <style>
         body {
-          //background-color: lightgray;
-          padding: 0;
-          margin: 0;
-        } 
-        
-        span {
-            //text-align: center;
-            //border: solid red 1px;;
-        }
-        
-        img {
-            width: 200px;
+            margin: 0;
+            padding: 0;            
         }
     </style>
-    <template-web-application></template-web-application>
+<!--    <app-one title="Template Application"></app-one>-->
+    <app-two id="aa" title="Template Application"></app-two>
 `, document.querySelector('body'));
+

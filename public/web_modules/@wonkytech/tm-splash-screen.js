@@ -89,7 +89,7 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
   initFirebase(firebase) {
     console.log(LOG_PREFIX + 'Firebase is now available.');
     this.firebase = firebase;
-    this.dispatchEventGlobal('firebase-ready');
+    document.dispatchEvent(createEvent('firebase-ready'));
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         console.log(LOG_PREFIX + 'User has logged in: ', user);
@@ -101,10 +101,8 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
             uid: userId
           };
           console.log(LOG_PREFIX + 'User retrieved from database: ', this.user);
-          this.dispatchEventGlobal('user-logged-in', {
-            detail: { ...this.user
-            }
-          });
+          document.dispatchEvent(createEvent('user-logged-in', { ...this.user
+          }));
         }).catch(error => {
           console.error(LOG_PREFIX + 'There was an issue getting user: ' + userId, error);
         });
@@ -114,11 +112,8 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
           const user = { ...this.user
           };
           this.user = undefined;
-          this.dispatchEventGlobal('user-logged-out', {
-            detail: user
-          });
-        } else {
-          console.warn(LOG_PREFIX + 'User was already logged out.');
+          document.dispatchEvent(createEvent('user-logged-out', { ...user
+          }));
         }
       }
     });
@@ -126,7 +121,7 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
 
 
   static get styles() {
-    //language=CSS
+    // language=CSS
     return css`
             :host {
                 display: inline-block;
@@ -224,11 +219,15 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
   }
 
   submit() {
-    if (this.loginAction === "login") {
+    const {
+      loginAction
+    } = this;
+
+    if (loginAction === "login") {
       this.loginWithEmail();
-    } else if (this.loginAction === "create") {
+    } else if (loginAction === "create") {
       this.createAccount();
-    } else if (this.loginAction === "forgot") {
+    } else if (loginAction === "forgot") {
       this.forgotPassword();
     }
   }
@@ -236,7 +235,8 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
   loginWithEmail() {
     const email = this.shadowRoot.querySelector('#email').value;
     const password = this.shadowRoot.querySelector('#password').value;
-    console.log(LOG_PREFIX + `Firebase login with email has been requested: Email(${email})`);
+    console.log(LOG_PREFIX + `Firebase login with email has been requested: Email(${email})`); // noinspection JSUnresolvedVariable,JSUnresolvedFunction
+
     this.firebase.auth().signInWithEmailAndPassword(email, password).then(response => {
       console.log(LOG_PREFIX + `Login with email was successful: Email(${email})`, response);
       this.storeUserLocally({
@@ -253,7 +253,8 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
     const password = this.shadowRoot.querySelector('#password').value;
     const firstName = this.shadowRoot.querySelector('#firstName').value;
     const lastName = this.shadowRoot.querySelector('#lastName').value;
-    console.log(LOG_PREFIX + `Requesting new account to be created: Email(${email})`);
+    console.log(LOG_PREFIX + `Requesting new account to be created: Email(${email})`); // noinspection JSUnresolvedVariable,JSUnresolvedFunction
+
     this.firebase.auth().createUserWithEmailAndPassword(email, password).then(response => {
       console.log(LOG_PREFIX + `Account has been created in firebase: Email(${email})`, response);
       let user = {
@@ -282,7 +283,8 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
 
   forgotPassword() {
     const email = this.shadowRoot.querySelector('#email').value;
-    console.log(LOG_PREFIX + `Requesting password reset email: Email(${email})`);
+    console.log(LOG_PREFIX + `Requesting password reset email: Email(${email})`); // noinspection JSUnresolvedVariable,JSUnresolvedFunction
+
     this.firebase.auth().sendPasswordResetEmail(email).then(() => {
       console.log(LOG_PREFIX + `Password reset email has been sent. Email(${email})`);
     }).catch(e => {
@@ -297,7 +299,8 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
 
   logout() {
     const email = this.user.email;
-    console.log(LOG_PREFIX + `Signing out user: Email(${email})`, this.user);
+    console.log(LOG_PREFIX + `Signing out user: Email(${email})`, this.user); // noinspection JSUnresolvedVariable,JSUnresolvedFunction
+
     this.firebase.auth().signOut().then(function () {
       console.log(LOG_PREFIX + `User has been signed out: Email(${email})`);
     }, function (error) {
@@ -308,6 +311,7 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
   retrieveUser(userId) {
     console.log(LOG_PREFIX + `Retrieving user from the database: uid(${userId})`);
     return new Promise((resolve, reject) => {
+      // noinspection JSUnresolvedVariable,JSUnresolvedFunction
       return this.firebase.database().ref('users/' + userId).once('value', snapshot => {
         let user = snapshot.val();
         console.log(LOG_PREFIX + `Retrieved user from database: Email(${user.email}), uid(${userId})`, user);
@@ -322,6 +326,7 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
   saveSaveUser(userId, user) {
     console.log(LOG_PREFIX + `Saving user to the database: uid(${userId})`, user);
     return new Promise((resolve, reject) => {
+      // noinspection JSUnresolvedVariable,JSUnresolvedFunction
       this.firebase.database().ref('users/' + userId).set(user).then(() => {
         console.log(LOG_PREFIX + `Saved the user into the database: Email(${user.email}), uid(${userId})`, user);
         resolve();
@@ -346,26 +351,20 @@ window.customElements.define('tm-firebase-user', class extends LitElement {
     };
   }
 
-  dispatchEventLocal(eventName, payload) {
-    dispatchEvent(createEvent(eventName, payload), this);
-  }
-
-  dispatchEventGlobal(eventName, payload) {
-    dispatchEvent(createEvent(eventName, payload), document);
-  }
-
 });
 
-function dispatchEvent(event, destination) {
-  (destination ? destination : document).dispatchEvent(event);
-}
-
 function createEvent(eventName, payload) {
-  return payload ? new CustomEvent(eventName, {
+  const options = {
+    bubbles: true,
+    cancelable: true
+  };
+  return payload ? new CustomEvent(eventName, { ...options,
     detail: payload
-  }) : new CustomEvent(eventName);
+  }) : new CustomEvent(eventName, { ...options
+  });
 }
 
+document.addEventListener('user-logged-in', () => console.log('AAAAAAAAAAAAAAAA'));
 window.customElements.define('tm-splash-screen', class extends LitElement {
   // noinspection JSUnusedGlobalSymbols
   static get properties() {
@@ -378,19 +377,54 @@ window.customElements.define('tm-splash-screen', class extends LitElement {
       },
       config: {
         type: Object
+      },
+      waitFor: {
+        type: Array
       }
     };
   }
 
   constructor() {
     super();
-    this.heading = 'Hello World!';
+    this.heading = '';
     this.login = false;
     this.config = undefined;
+    this.waitFor = undefined;
   }
 
   firstUpdated(_changedProperties) {
     this.splash = this.shadowRoot.getElementById('splash');
+    const {
+      waitFor
+    } = this;
+
+    if (waitFor) {
+      Promise.all(waitFor.map(name => customElements.whenDefined(name))).then(() => console.log('TM-SPLASH-SCREEN: application good to go.'));
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    if (this.login) {
+      this._loginListener = () => this.hide();
+
+      this._logoutListener = () => this.show();
+
+      document.addEventListener('user-logged-in', this._loginListener);
+      document.addEventListener('user-logged-out', this._logoutListener);
+    }
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    if (this.login) {
+      document.removeEventListener('user-logged-in', this._loginListener);
+      document.removeEventListener('user-logged-out', this._logoutListener);
+      this._loginListener = undefined;
+      this._logoutListener = undefined;
+    }
   }
 
   static get styles() {
@@ -479,12 +513,20 @@ window.customElements.define('tm-splash-screen', class extends LitElement {
 
     if (login) {
       if (config) {
-        return html`<tm-firebase-user .config="${config}"></tm-firebase-user>`;
+        return html`<tm-firebase-user id="login" .config="${config}"></tm-firebase-user>`;
       } else {
-        return html`<tm-firebase-user></tm-firebase-user>`;
+        return html`<tm-firebase-user id="login"></tm-firebase-user>`;
       }
     } else {
       return html``;
+    }
+  }
+
+  logout() {
+    this.show();
+
+    if (this.login) {
+      this.shadowRoot.getElementById('login').logout();
     }
   }
 
